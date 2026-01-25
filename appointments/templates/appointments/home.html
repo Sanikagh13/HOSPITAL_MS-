@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero-section text-center py-5 bg-light rounded shadow-sm mb-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold text-primary">🏥 Welcome to Hospital MS</h1>
+        <p class="lead text-muted">Providing heartfelt, compassionate care with cutting-edge medical technology.</p>
+        <div class="mt-4">
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-5 me-2 shadow">Book Appointment</a>
+            <a href="#services" class="btn btn-outline-secondary btn-lg px-5">Our Services</a>
+        </div>
+    </div>
+</div>
+
+<div id="services" class="row text-center g-4">
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4">
+            <h3 class="text-success">Cardiology</h3>
+            <p>Comprehensive heart care and diagnostic excellence.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4">
+            <h3 class="text-info">Pediatrics</h3>
+            <p>Specialized medical attention for children and infants.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4">
+            <h3 class="text-warning">Orthopedics</h3>
+            <p>Expert care for bones, joints, and musculoskeletal health.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 p-5 bg-white rounded shadow-sm">
+    <div class="col-md-6">
+        <h4>Contact Information</h4>
+        <p>📍 123 Healthcare Way, Medical District</p>
+        <p>📞 Emergency: (555) 012-3456</p>
+    </div>
+    <div class="col-md-6 border-start ps-4">
+        <h5 class="fst-italic">"The care here is organized and the booking system is seamless. Highly recommended!"</h5>
+        <p class="text-muted small">- Recent Patient Testimonial</p>
+    </div>
+</div>
+{% endblock %}

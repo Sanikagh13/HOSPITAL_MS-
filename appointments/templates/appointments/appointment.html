@@ -1,0 +1,29 @@
+<h2>Book Appointment</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Book</button>
+</form>
+
+<hr>
+
+<h3>Appointments</h3>
+
+<table border="1">
+<tr>
+    <th>Patient</th>
+    <th>Doctor</th>
+    <th>Date</th>
+    <th>Time</th>
+</tr>
+
+{% for a in appointments %}
+<tr>
+    <td>{{ a.patient }}</td>
+    <td>{{ a.doctor }}</td>
+    <td>{{ a.date }}</td>
+    <td>{{ a.time }}</td>
+</tr>
+{% endfor %}
+</table>

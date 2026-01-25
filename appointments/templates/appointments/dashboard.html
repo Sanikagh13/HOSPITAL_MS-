@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Add New Patient</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ pform.as_p }}
+                        <button type="submit" name="add_patient" class="btn btn-primary w-100">Add Patient</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">Step 1: Select Patient, Doctor & Date</h5>
+    </div>
+
+    <div class="card-body">
+        <form method="GET">
+
+            <!-- Patient -->
+            <div class="mb-3">
+                <label class="form-label">Patient</label>
+                <select name="patient" class="form-select" onchange="this.form.submit()">
+                    <option value="">--- Choose Patient ---</option>
+                    {% for p in patients %}
+                        <option value="{{ p.id }}"
+                          {% if p.id|stringformat:"s" == request.GET.patient %}selected{% endif %}>
+                            {{ p.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Doctor -->
+            <div class="mb-3">
+                <label class="form-label">Doctor</label>
+                <select name="doctor_id" class="form-select" onchange="this.form.submit()">
+                    <option value="">--- Choose Doctor ---</option>
+                    {% for d in doctors %}
+                        <option value="{{ d.id }}"
+                          {% if d.id|stringformat:"s" == selected_doctor_id %}selected{% endif %}>
+                            Dr. {{ d.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Date -->
+            <div class="mb-3">
+                <label class="form-label">Appointment Date</label>
+                <input type="date"
+                       name="date"
+                       class="form-control"
+                       value="{{ selected_date }}"
+                       onchange="this.form.submit()">
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+            {% if slots %}
+<div class="card shadow-sm border-0 mb-4 border-success">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">Step 2: Choose Available Slot</h5>
+    </div>
+
+    <div class="card-body">
+
+        <!-- SLOT BUTTONS -->
+        <div class="row g-2 mb-3">
+            {% for slot in slots %}
+                <div class="col-4">
+                    {% if slot.available %}
+                        <button type="button"
+                                class="btn btn-outline-success w-100 slot-btn"
+                                data-time="{{ slot.time }}">
+                            {{ slot.time }}
+                        </button>
+                    {% else %}
+                        <button class="btn btn-danger w-100" disabled>
+                            Booked
+                        </button>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- CONFIRM FORM -->
+        <form method="POST">
+            {% csrf_token %}
+
+            <input type="hidden" name="patient" value="{{ request.GET.patient }}">
+            <input type="hidden" name="doctor" value="{{ selected_doctor_id }}">
+            <input type="hidden" name="date" value="{{ selected_date }}">
+            <input type="hidden" name="time" id="id_time_input">
+
+            <button type="submit"
+                    name="add_appointment"
+                    class="btn btn-success w-100"
+                    id="confirm-booking-btn"
+                    disabled>
+                Confirm Booking
+            </button>
+        </form>
+
+    </div>
+</div>
+{% endif %}
+
+
+        <div class="col-md-8">
+            <div class="card mb-4 border-info shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0"><i class="fas fa-calendar-check"></i> My Personal Schedule</h4>
+                <div class="card-body p-0">
+    {% if appointments %}
+    <table class="table table-striped mb-0">
+        <thead class="table-light">
+            <tr>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in appointments %}
+            <tr>
+                <td>{{ a.patient.name }}</td>
+                <td>Dr. {{ a.doctor.name }}</td>
+                <td>{{ a.date }}</td>
+                <td>{{ a.time }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="text-muted text-center py-3">No appointments found.</p>
+    {% endif %}
+</div>
+
+                </div>
+                <div class="card-body">
+                    {% for a in appointments %}
+                        {% if a.patient.user == request.user %}
+    <div class="alert alert-info border-2 shadow-sm">
+        <h5 class="alert-heading"><i class="fas fa-clock"></i> Upcoming Appointment</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <p class="mb-1"><strong>Doctor:</strong> Dr. {{ a.doctor.name }} ({{ a.doctor.specialty }})</p>
+                <p class="mb-1"><strong>Date:</strong> {{ a.date }}</p>
+                <p class="mb-0"><strong>Time:</strong> {{ a.time }}</p>
+            </div>
+            <div class="col-md-6 border-start">
+                <p class="small"><strong>Preparation Instructions:</strong></p>
+                <p class="text-danger small mb-0">{{ a.instructions }}</p>
+            </div>
+        </div>
+    </div>
+{% endif %}
+                    {% empty %}
+                        <p class="text-muted text-center">No upcoming appointments.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <form method="GET" class="row g-2">
+                        <div class="col-md-9">
+                            <input type="text" name="q" class="form-control" placeholder="Search by name or phone..." value="{{ query|default:'' }}">
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-secondary w-100">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Patients Records</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in patients %}
+                            <tr>
+                                <td>{{ p.name }}</td>
+                                <td>{{ p.phone }}</td>
+                                <td>
+                                    <a href="{% url 'edit_patient' p.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                    <a href="{% url 'delete_patient' p.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-center py-3">No results found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.slot-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+
+        // Reset all buttons
+        document.querySelectorAll('.slot-btn').forEach(b => {
+            b.classList.remove('btn-success');
+            b.classList.add('btn-outline-success');
+        });
+
+        // Highlight selected
+        this.classList.remove('btn-outline-success');
+        this.classList.add('btn-success');
+
+        // Set hidden time value
+        document.getElementById('id_time_input').value = this.dataset.time;
+
+        // Enable confirm button
+        document.getElementById('confirm-booking-btn').disabled = false;
+    });
+});
+</script>
+{% endblock %}
