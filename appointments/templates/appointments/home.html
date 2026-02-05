@@ -2,7 +2,7 @@
 {% block content %}
 <div class="hero-section text-center py-5 bg-light rounded shadow-sm mb-5">
     <div class="container">
-        <h1 class="display-4 fw-bold text-primary">🏥 Welcome to Hospital MS</h1>
+        <h1 class="display-4 fw-bold text-primary">🏥 Welcome to Arogyam Hospital</h1>
         <p class="lead text-muted">Providing heartfelt, compassionate care with cutting-edge medical technology.</p>
         <div class="mt-4">
             <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-5 me-2 shadow">Book Appointment</a>
@@ -43,4 +43,22 @@
         <p class="text-muted small">- Recent Patient Testimonial</p>
     </div>
 </div>
+
+<div id="about" class="row mt-5 p-5 bg-light rounded shadow-sm">
+    <div class="col-md-6">
+        <h3>About Arogyam</h3>
+        <p>
+            Arogyam is committed to providing quality healthcare with modern facilities,
+            experienced doctors, and a patient-friendly appointment system.
+        </p>
+    </div>
+    <div class="col-md-6">
+        <h5>Our Mission</h5>
+        <p>
+            To make healthcare accessible, organized, and stress-free through digital solutions
+            and compassionate medical care.
+        </p>
+    </div>
+</div>
+
 {% endblock %}

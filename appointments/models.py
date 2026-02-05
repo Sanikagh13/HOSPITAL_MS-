@@ -9,6 +9,7 @@ class Doctor(models.Model):
         return f"Dr. {self.name}"
 
 class Patient(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
     age = models.IntegerField(null=True, blank=True)      
@@ -21,5 +22,5 @@ class Appointment(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     date = models.DateField()
-    time = models.CharField(max_length=10) # e.g., "10:00 AM"
+    time = models.CharField(max_length=10) 
     instructions = models.TextField(blank=True, default="Please arrive 10 minutes early.")

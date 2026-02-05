@@ -5,6 +5,7 @@ from .models import Patient, Appointment, Doctor
 from .forms import PatientForm
 from .utils import get_available_slots
 
+
 @login_required
 def dashboard(request):
     # 1. Role

@@ -1,71 +1,89 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card mb-4 shadow-sm border-0">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Add New Patient</h5>
-                </div>
-                <div class="card-body">
-                    <form method="POST">
-                        {% csrf_token %}
-                        {{ pform.as_p }}
-                        <button type="submit" name="add_patient" class="btn btn-primary w-100">Add Patient</button>
-                    </form>
-                </div>
-            </div>
+<style>
+@media (max-width: 768px) {
+  .card {
+    margin-bottom: 16px;
+  }
+}
+</style>
+<div class="container-fluid px-4 mt-4">
 
-            <div class="card shadow-sm border-0 mb-4">
-    <div class="card-header bg-success text-white">
-        <h5 class="mb-0">Step 1: Select Patient, Doctor & Date</h5>
+  <div class="row g-4">
+
+    <!-- LEFT COLUMN -->
+    <div class="col-12 col-md-5 col-lg-4">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+          Add New Patient
+        </div>
+        <div class="card-body">
+          <form method="POST">
+            {% csrf_token %}
+            {{ pform.as_p }}
+            <button type="submit" name="add_patient" class="btn btn-primary w-100">
+              Add Patient
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
 
-    <div class="card-body">
-        <form method="GET">
+    <!-- RIGHT COLUMN -->
+    <div class="col-12 col-md-7 col-lg-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
+          Step 1: Select Patient, Doctor & Date
+        </div>
+        <div class="card-body">
 
-            <!-- Patient -->
+          <form method="GET">
+
             <div class="mb-3">
-                <label class="form-label">Patient</label>
-                <select name="patient" class="form-select" onchange="this.form.submit()">
-                    <option value="">--- Choose Patient ---</option>
-                    {% for p in patients %}
-                        <option value="{{ p.id }}"
-                          {% if p.id|stringformat:"s" == request.GET.patient %}selected{% endif %}>
-                            {{ p.name }}
-                        </option>
-                    {% endfor %}
-                </select>
+              <label class="form-label">Patient</label>
+              <select name="patient" class="form-select" onchange="this.form.submit()">
+                <option value="">--- Choose Patient ---</option>
+                {% for p in patients %}
+                <option value="{{ p.id }}"
+                  {% if p.id|stringformat:"s" == request.GET.patient %}selected{% endif %}>
+                  {{ p.name }}
+                </option>
+                {% endfor %}
+              </select>
             </div>
 
-            <!-- Doctor -->
             <div class="mb-3">
-                <label class="form-label">Doctor</label>
-                <select name="doctor_id" class="form-select" onchange="this.form.submit()">
-                    <option value="">--- Choose Doctor ---</option>
-                    {% for d in doctors %}
-                        <option value="{{ d.id }}"
-                          {% if d.id|stringformat:"s" == selected_doctor_id %}selected{% endif %}>
-                            Dr. {{ d.name }}
-                        </option>
-                    {% endfor %}
-                </select>
+              <label class="form-label">Doctor</label>
+              <select name="doctor_id" class="form-select" onchange="this.form.submit()">
+                <option value="">--- Choose Doctor ---</option>
+                {% for d in doctors %}
+                <option value="{{ d.id }}"
+                  {% if d.id|stringformat:"s" == selected_doctor_id %}selected{% endif %}>
+                   {{ d.name }}
+                </option>
+                {% endfor %}
+              </select>
             </div>
 
-            <!-- Date -->
             <div class="mb-3">
-                <label class="form-label">Appointment Date</label>
-                <input type="date"
-                       name="date"
-                       class="form-control"
-                       value="{{ selected_date }}"
-                       onchange="this.form.submit()">
+              <label class="form-label">Appointment Date</label>
+              <input type="date"
+                     name="date"
+                     class="form-control"
+                     value="{{ selected_date }}"
+                     onchange="this.form.submit()">
             </div>
 
-        </form>
+          </form>
+        </div>
+      </div>
     </div>
-</div>
+
+  </div>  
+</div>    
+
+
 
 
             {% if slots %}
@@ -78,8 +96,9 @@
 
         <!-- SLOT BUTTONS -->
         <div class="row g-2 mb-3">
-            {% for slot in slots %}
-                <div class="col-4">
+    {% for slot in slots %}
+        <div class="col-6 col-md-4">
+
                     {% if slot.available %}
                         <button type="button"
                                 class="btn btn-outline-success w-100 slot-btn"
@@ -118,13 +137,14 @@
 {% endif %}
 
 
-        <div class="col-md-8">
+        <div class="col-12">
             <div class="card mb-4 border-info shadow-sm">
                 <div class="card-header bg-info text-white">
                     <h4 class="mb-0"><i class="fas fa-calendar-check"></i> My Personal Schedule</h4>
                 <div class="card-body p-0">
     {% if appointments %}
-    <table class="table table-striped mb-0">
+    <div class="table-responsive">
+  <table class="table table-striped mb-0">
         <thead class="table-light">
             <tr>
                 <th>Patient</th>
@@ -137,13 +157,14 @@
             {% for a in appointments %}
             <tr>
                 <td>{{ a.patient.name }}</td>
-                <td>Dr. {{ a.doctor.name }}</td>
+                <td>{{ a.doctor.name }}</td>
                 <td>{{ a.date }}</td>
                 <td>{{ a.time }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    </div>
     {% else %}
         <p class="text-muted text-center py-3">No appointments found.</p>
     {% endif %}
